@@ -61,6 +61,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
                 } else
                     break;
             }
+
         return tbody
     }
 
@@ -120,6 +121,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         this.currentPage[0] = this.currentPage[1];
         this.currentPage[1] = this.currentPage[1] - 1;
         this.createTableBodyPage(this.currentPage[1]);
+        this.changePageInfoText();
         this.disableOrEnableButtons();
     }
 
@@ -139,6 +141,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         this.currentPage[0] = this.currentPage[1];
         this.currentPage[1] = this.currentPage[1] + 1;
         this.createTableBodyPage(this.currentPage[1]);
+        this.changePageInfoText();
         this.disableOrEnableButtons();
     }
 
@@ -174,8 +177,8 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
             console.log(this.indexOfRowsToDisplay);
             this.createTableBodyPage(this.currentPage[1]);
-        } else
-            this.createTableBodyPage(this.currentPage[1]);
+            this.changePageInfoText();
+        } 
     }
 
     this.inputSearcher = () => {
@@ -196,7 +199,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         let page_info = document.getElementById('tablely_page_info_' + elementId);
         page_info.textContent = 'Mostrando ' + this.rowsPerPage + ' registros por pagina de ' + this.pagesNumber + ' paginas, pagina : ' + this.currentPage[1] + ', registros: ' + (this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow);
     }
-    
+
     this.createPageInfo = () => {
         let page_info = document.createElement('p');
         page_info.setAttribute('id', 'tablely_page_info_' + elementId);
@@ -218,7 +221,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         this.boxElement.appendChild(this.createPageInfo());
         console.log(table);
     }
-    
+
     this.assembleTable();
 }
 
