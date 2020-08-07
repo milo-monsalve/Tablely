@@ -65,6 +65,33 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return tbody
     }
 
+    this.sortTableByColumn = (column) => {
+
+        if(this.indexOfRowsToDisplay.length == 0)
+            data.sort( (a,b) => {
+                if (a[column] < b[column]) {
+                    return -1;
+                }
+                if (a[column] > b[column]) {
+                    return 1;
+                }
+                return 0;
+            })
+        else 
+            this.indexOfRowsToDisplay.sort( (a,b) => {
+                if (data[a][column] < data[b][column]) {
+                    return -1;
+                }
+                if (data[a][column] > data[b][column]) {
+                    return 1;
+                }
+                return 0;
+            })
+
+        this.createTableBodyPage(this.currentPage[1]);
+        this.changePageInfoText();
+    }
+
     this.createHeader = () => {
         let thead = document.createElement('thead');
         thead.setAttribute('id', 'tablely_thead_' + elementId)
@@ -72,9 +99,9 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         for (let i = 0; i < this.headers.length; i++) {
             let thead_td = document.createElement('td');
             thead_td.addEventListener('click', e => {
-                //this.showHidePage(this.currentPage[0], "none");
-                //this.showHidePage(this.currentPage[1], "none");
                 //this.sortTableByColumn(e.target.cellIndex)
+                console.log(this.headers[e.target.cellIndex]);
+                this.sortTableByColumn(this.headers[e.target.cellIndex]);
             })
             thead_td.innerText = this.headers[i];
             thead_row.appendChild(thead_td);
@@ -93,7 +120,8 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
             //this.showHidePage(this.currentPage[1], "none");
             this.rowsPerPage = Number(e.target.value);
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
-            this.showRows();
+            this.createTableBodyPage(this.currentPage[1]);
+            this.changePageInfoText();
         })
 
         for (let i in inputs) {
@@ -167,9 +195,9 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
     }
 
     this.searchValue = (value) => {
+        this.indexOfRowsToDisplay = []
         if (value.length > 0) {
             let table_body = document.getElementById('tablely_tbody_' + elementId);
-            this.indexOfRowsToDisplay = []
             for (let i = 0; i < this.totalRowsToShow; i++)
                 if (this.searchValueInObject(data[i], value))
                     this.indexOfRowsToDisplay.push(i);
@@ -178,7 +206,10 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
             console.log(this.indexOfRowsToDisplay);
             this.createTableBodyPage(this.currentPage[1]);
             this.changePageInfoText();
-        } 
+        } else{
+            this.createTableBodyPage(this.currentPage[1]);
+            this.changePageInfoText();
+        }
     }
 
     this.inputSearcher = () => {
