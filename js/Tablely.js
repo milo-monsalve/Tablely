@@ -85,4 +85,53 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
         return inputs_select
     }
+
+    this.disableOrEnableButtons = () => {
+        if (this.currentPage[1] == 1)
+            document.getElementById('tablely_btn_previous_' + elementId).setAttribute('disabled', true);
+        else
+            document.getElementById('tablely_btn_previous_' + elementId).removeAttribute('disabled');
+
+        if (this.currentPage[1] == this.pagesNumber)
+            document.getElementById('tablely_btn_next_' + elementId).setAttribute('disabled', true);
+        else
+            document.getElementById('tablely_btn_next_' + elementId).removeAttribute('disabled');
+    }
+
+    this.clickPreviousPage = () => {
+        this.currentPage[0] = this.currentPage[1];
+        this.currentPage[1] = this.currentPage[1] - 1;
+        this.createTableBodyPage(this.currentPage[1]);
+        this.disableOrEnableButtons();
+    }
+
+    this.createButtonPrevious = () => {
+        let previous = document.createElement('button');
+        previous.setAttribute('id', 'tablely_btn_previous_' + elementId);
+        previous.setAttribute('disabled', true);
+        previous.textContent = "Previous"
+        previous.addEventListener('click', e => {
+            this.clickPreviousPage()
+        })
+
+        return previous;
+    }
+    
+    this.clickNextPage = () => {
+        this.currentPage[0] = this.currentPage[1];
+        this.currentPage[1] = this.currentPage[1] + 1;
+        this.createTableBodyPage(this.currentPage[1]);
+        this.disableOrEnableButtons();
+    }
+
+    this.createButtonNext = () => {
+        let next = document.createElement('button');
+        next.setAttribute('id', 'tablely_btn_next_' + elementId)
+        next.textContent = "Next"
+        next.addEventListener('click', e => {
+            this.clickNextPage();
+        })
+
+        return next;
+    }
 }
