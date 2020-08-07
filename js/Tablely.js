@@ -14,13 +14,37 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return table;
     }
 
-    this.deleteRows = () => {
-        let table_body_children = document.getElementById('tablely_tbody_' + elementId);
-        table_body_children.querySelectorAll('*').forEach(row => row.remove());
+    this.deleteRows = (tableBody) => {
+        tableBody.querySelectorAll('*').forEach(row => row.remove());
+    }
+
+    this.createTableBodyPage = (page) => {
+        let tbody
+        if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))){
+            tbody = document.getElementById('tablely_tbody_' + elementId);
+            this.deleteRows(tbody);
+        } else {
+            tbody = document.createElement('tbody');
+            tbody.setAttribute('id', 'tablely_tbody_' + elementId)
+        }
+
+        let showRowsSince = this.rowsPerPage * (page - 1);
+        let showRowsUntil = this.rowsPerPage * page;
+        for (let i = showRowsSince; i < showRowsUntil; i++) {
+            let tbody_row = document.createElement('tr');
+            //tbody_row.style.display = "none";
+            let tr_data = Object.values(data[i]);
+
+            for (let j = 0; j < tr_data.length; j++) {
+                let tbody_td = document.createElement('td');
+                tbody_td.innerText = tr_data[j];
+                tbody_row.appendChild(tbody_td);
+            }
+
+            tbody.appendChild(tbody_row);
+        }
+        return tbody
     }
 
 
-   
-
-    
 }
