@@ -65,4 +65,24 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
         return thead
     }
+
+    this.createInputsSelect = () => {
+        let inputs_select = document.createElement('select');
+        inputs_select.setAttribute('id', 'tablely_inputs_select_' + elementId);
+        inputs_select.addEventListener('change', e => {
+            //this.showHidePage(this.currentPage[0], "none");
+            //this.showHidePage(this.currentPage[1], "none");
+            this.rowsPerPage = Number(e.target.value);
+            this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
+            this.showRows();
+        })
+
+        for (let i in inputs) {
+            let optionSelect = document.createElement('option');
+            optionSelect.textContent = inputs[i];
+            inputs_select.appendChild(optionSelect)
+        }
+
+        return inputs_select
+    }
 }
