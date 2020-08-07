@@ -32,31 +32,31 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         let showRowsUntil = this.rowsPerPage * page;
         if (this.indexOfRowsToDisplay.length == 0)
             for (let i = showRowsSince; i < showRowsUntil; i++) {
-                if (i < this.totalRowsToShow){
+                if (i < this.totalRowsToShow) {
                     let tbody_row = document.createElement('tr');
                     let tr_data = Object.values(data[i]);
-    
+
                     for (let j = 0; j < tr_data.length; j++) {
                         let tbody_td = document.createElement('td');
                         tbody_td.innerText = tr_data[j];
                         tbody_row.appendChild(tbody_td);
                     }
-    
+
                     tbody.appendChild(tbody_row);
-                }                
+                }
             }
         else
-            for (let i = showRowsSince; i < showRowsUntil; i++){
+            for (let i = showRowsSince; i < showRowsUntil; i++) {
                 if (i < this.indexOfRowsToDisplay.length) {
                     let tbody_row = document.createElement('tr');
                     let tr_data = Object.values(data[this.indexOfRowsToDisplay[i]]);
-                    
+
                     for (let j = 0; j < tr_data.length; j++) {
                         let tbody_td = document.createElement('td');
                         tbody_td.innerText = tr_data[j];
                         tbody_row.appendChild(tbody_td);
                     }
-    
+
                     tbody.appendChild(tbody_row);
                 } else
                     break;
@@ -153,10 +153,51 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return next;
     }
 
+    this.searchValueInObject = (obj, searchedValue) => {
+        let objData = Object.keys(obj).length;
+
+        for (let item in obj)
+            if ((obj[item].toString().toLowerCase().indexOf(searchedValue.toLowerCase())) >= 0)
+                return true
+
+        return false
+    }
+
+    this.searchValue = (value) => {
+        if (value.length > 0) {
+            let table_body = document.getElementById('tablely_tbody_' + elementId);
+            this.indexOfRowsToDisplay = []
+            for (let i = 0; i < this.totalRowsToShow; i++)
+                if (this.searchValueInObject(data[i], value))
+                    this.indexOfRowsToDisplay.push(i);
+
+            this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
+            console.log(this.indexOfRowsToDisplay);
+            this.createTableBodyPage(this.currentPage[1]);
+        } else
+            this.createTableBodyPage(this.currentPage[1]);
+    }
+
+    this.inputSearcher = () => {
+        let input_searcher = document.createElement('input')
+        input_searcher.setAttribute('id', 'tablely_input_searcher_' + elementId)
+        input_searcher.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                //this.showHidePage(this.currentPage[0], "none");
+                //this.showHidePage(this.currentPage[1], "none");
+                this.searchValue(e.target.value)
+            }
+        })
+
+        return input_searcher
+    }
+
+
     this.assembleTable = () => {
         let table = this.createTable();
         table.appendChild(this.createHeader())
-        table.appendChild(this.createTableBodyPage(this.currentPage[1]))
+        table.appendChild(this.createTableBodyPage(this.currentPage[1]));
+        this.boxElement.appendChild(this.inputSearcher());
         this.boxElement.appendChild(table);
         this.boxElement.appendChild(this.createInputsSelect());
         this.boxElement.appendChild(this.createButtonPrevious());
@@ -164,7 +205,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
         console.log(table);
     }
-
+    
     this.assembleTable();
 }
 
