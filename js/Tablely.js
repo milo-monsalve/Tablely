@@ -14,6 +14,12 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return table;
     }
 
+    this.deleteRows = () => {
+        let table_body_children = document.getElementById('tablely_tbody_' + elementId);
+        table_body_children.querySelectorAll('*').forEach(row => row.remove());
+    }
+
+
    
 
     
