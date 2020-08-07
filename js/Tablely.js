@@ -192,6 +192,19 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return input_searcher
     }
 
+    this.changePageInfoText = () => {
+        let page_info = document.getElementById('tablely_page_info_' + elementId);
+        page_info.textContent = 'Mostrando ' + this.rowsPerPage + ' registros por pagina de ' + this.pagesNumber + ' paginas, pagina : ' + this.currentPage[1] + ', registros: ' + (this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow);
+    }
+    
+    this.createPageInfo = () => {
+        let page_info = document.createElement('p');
+        page_info.setAttribute('id', 'tablely_page_info_' + elementId);
+        page_info.textContent = 'Mostrando ' + this.rowsPerPage + ' registros por pagina de ' + this.pagesNumber + ' paginas, pagina : ' + this.currentPage[1] + ', registros: ' + (this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow);
+
+        return page_info;
+    }
+
 
     this.assembleTable = () => {
         let table = this.createTable();
@@ -202,7 +215,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         this.boxElement.appendChild(this.createInputsSelect());
         this.boxElement.appendChild(this.createButtonPrevious());
         this.boxElement.appendChild(this.createButtonNext());
-
+        this.boxElement.appendChild(this.createPageInfo());
         console.log(table);
     }
     
