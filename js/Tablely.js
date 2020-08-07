@@ -65,28 +65,62 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return tbody
     }
 
-    this.sortTableByColumn = (column) => {
+    this.sortTableByColumn = (column,type) => {
 
-        if(this.indexOfRowsToDisplay.length == 0)
-            data.sort( (a,b) => {
-                if (a[column] < b[column]) {
-                    return -1;
-                }
-                if (a[column] > b[column]) {
-                    return 1;
-                }
-                return 0;
-            })
-        else 
-            this.indexOfRowsToDisplay.sort( (a,b) => {
-                if (data[a][column] < data[b][column]) {
-                    return -1;
-                }
-                if (data[a][column] > data[b][column]) {
-                    return 1;
-                }
-                return 0;
-            })
+        if (this.indexOfRowsToDisplay.length == 0)
+            switch (type) {
+                case 'row-down':
+                    data.sort((a, b) => {
+                        if (a[column] < b[column]) {
+                            return -1;
+                        }
+                        if (a[column] > b[column]) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'row-up':
+                    data.sort((a, b) => {
+                        if (a[column] > b[column]) {
+                            return -1;
+                        }
+                        if (a[column] < b[column]) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    break;
+                default:
+                    break;
+            }
+        else
+        switch (type) {
+            case 'row-down':
+                this.indexOfRowsToDisplay.sort((a, b) => {
+                    if (data[a][column] < data[b][column]) {
+                        return -1;
+                    }
+                    if (data[a][column] > data[b][column]) {
+                        return 1;
+                    }
+                    return 0;
+                })
+                break;
+            case 'row-up':
+                this.indexOfRowsToDisplay.sort((a, b) => {
+                    if (data[a][column] > data[b][column]) {
+                        return -1;
+                    }
+                    if (data[a][column] < data[b][column]) {
+                        return 1;
+                    }
+                    return 0;
+                })
+                break;
+            default:
+                break;
+        }
 
         this.createTableBodyPage(this.currentPage[1]);
         this.changePageInfoText();
@@ -99,9 +133,20 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         for (let i = 0; i < this.headers.length; i++) {
             let thead_td = document.createElement('td');
             thead_td.addEventListener('click', e => {
-                //this.sortTableByColumn(e.target.cellIndex)
-                console.log(this.headers[e.target.cellIndex]);
-                this.sortTableByColumn(this.headers[e.target.cellIndex]);
+                new Promise((resolve, reject) => {
+                    if (event.target.classList.contains('row-up')) {
+                        event.target.classList.remove('row-up')
+                        event.target.classList.add('row-down')
+                    } else if (event.target.classList.contains('row-down')) {
+                        event.target.classList.remove('row-down')
+                        event.target.classList.add('row-up')
+                    } else {
+                        event.target.classList.add('row-down')
+                    }
+                    resolve(event.target.className)
+                }).then(res => {
+                    this.sortTableByColumn(this.headers[e.target.cellIndex],res);
+                })
             })
             thead_td.innerText = this.headers[i];
             thead_row.appendChild(thead_td);
@@ -116,8 +161,6 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         let inputs_select = document.createElement('select');
         inputs_select.setAttribute('id', 'tablely_inputs_select_' + elementId);
         inputs_select.addEventListener('change', e => {
-            //this.showHidePage(this.currentPage[0], "none");
-            //this.showHidePage(this.currentPage[1], "none");
             this.rowsPerPage = Number(e.target.value);
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
             this.createTableBodyPage(this.currentPage[1]);
@@ -206,7 +249,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
             console.log(this.indexOfRowsToDisplay);
             this.createTableBodyPage(this.currentPage[1]);
             this.changePageInfoText();
-        } else{
+        } else {
             this.createTableBodyPage(this.currentPage[1]);
             this.changePageInfoText();
         }
@@ -217,8 +260,6 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         input_searcher.setAttribute('id', 'tablely_input_searcher_' + elementId)
         input_searcher.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
-                //this.showHidePage(this.currentPage[0], "none");
-                //this.showHidePage(this.currentPage[1], "none");
                 this.searchValue(e.target.value)
             }
         })
