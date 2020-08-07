@@ -20,7 +20,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
     this.createTableBodyPage = (page) => {
         let tbody
-        if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))){
+        if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))) {
             tbody = document.getElementById('tablely_tbody_' + elementId);
             this.deleteRows(tbody);
         } else {
@@ -30,19 +30,37 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
         let showRowsSince = this.rowsPerPage * (page - 1);
         let showRowsUntil = this.rowsPerPage * page;
-        for (let i = showRowsSince; i < showRowsUntil; i++) {
-            let tbody_row = document.createElement('tr');
-            //tbody_row.style.display = "none";
-            let tr_data = Object.values(data[i]);
-
-            for (let j = 0; j < tr_data.length; j++) {
-                let tbody_td = document.createElement('td');
-                tbody_td.innerText = tr_data[j];
-                tbody_row.appendChild(tbody_td);
+        if (this.indexOfRowsToDisplay.length == 0)
+            for (let i = showRowsSince; i < showRowsUntil; i++) {
+                if (i < this.totalRowsToShow){
+                    let tbody_row = document.createElement('tr');
+                    let tr_data = Object.values(data[i]);
+    
+                    for (let j = 0; j < tr_data.length; j++) {
+                        let tbody_td = document.createElement('td');
+                        tbody_td.innerText = tr_data[j];
+                        tbody_row.appendChild(tbody_td);
+                    }
+    
+                    tbody.appendChild(tbody_row);
+                }                
             }
-
-            tbody.appendChild(tbody_row);
-        }
+        else
+            for (let i = showRowsSince; i < showRowsUntil; i++){
+                if (i < this.indexOfRowsToDisplay.length) {
+                    let tbody_row = document.createElement('tr');
+                    let tr_data = Object.values(data[this.indexOfRowsToDisplay[i]]);
+                    
+                    for (let j = 0; j < tr_data.length; j++) {
+                        let tbody_td = document.createElement('td');
+                        tbody_td.innerText = tr_data[j];
+                        tbody_row.appendChild(tbody_td);
+                    }
+    
+                    tbody.appendChild(tbody_row);
+                } else
+                    break;
+            }
         return tbody
     }
 
@@ -116,7 +134,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
         return previous;
     }
-    
+
     this.clickNextPage = () => {
         this.currentPage[0] = this.currentPage[1];
         this.currentPage[1] = this.currentPage[1] + 1;
@@ -134,4 +152,20 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
 
         return next;
     }
+
+    this.assembleTable = () => {
+        let table = this.createTable();
+        table.appendChild(this.createHeader())
+        table.appendChild(this.createTableBodyPage(this.currentPage[1]))
+        this.boxElement.appendChild(table);
+        this.boxElement.appendChild(this.createInputsSelect());
+        this.boxElement.appendChild(this.createButtonPrevious());
+        this.boxElement.appendChild(this.createButtonNext());
+
+        console.log(table);
+    }
+
+    this.assembleTable();
 }
+
+Tablely("mytable", empleados);
