@@ -46,5 +46,23 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20]) {
         return tbody
     }
 
+    this.createHeader = () => {
+        let thead = document.createElement('thead');
+        thead.setAttribute('id', 'tablely_thead_' + elementId)
+        let thead_row = document.createElement('tr');
+        for (let i = 0; i < this.headers.length; i++) {
+            let thead_td = document.createElement('td');
+            thead_td.addEventListener('click', e => {
+                //this.showHidePage(this.currentPage[0], "none");
+                //this.showHidePage(this.currentPage[1], "none");
+                //this.sortTableByColumn(e.target.cellIndex)
+            })
+            thead_td.innerText = this.headers[i];
+            thead_row.appendChild(thead_td);
+        }
 
+        thead.appendChild(thead_row);
+
+        return thead
+    }
 }
