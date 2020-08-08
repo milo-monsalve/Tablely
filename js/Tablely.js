@@ -1,4 +1,4 @@
-function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) {
+function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}) {
     this.boxElement = document.getElementById(elementId);
     this.headers = Object.keys(data[0]);
     this.totalRowsToShow = data.length;
@@ -8,17 +8,22 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
     this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
 
 
-    this.createTable = () => {
+    createTable = () => {
         let table = document.createElement('table');
         table.setAttribute('id', 'tablely_table_' + elementId)
         return table;
     }
 
-    this.deleteRows = (tableBody) => {
+    this.clearTableBody = () => {
+        tbody = document.getElementById('tablely_tbody_' + elementId);
+        deleteRows(tbody);
+    }
+
+    deleteRows = (tableBody) => {
         tableBody.querySelectorAll('*').forEach(row => row.remove());
     }
 
-    this.getCellInfo = (cell) => {
+    getCellInfo = (cell) => {
         let cellInfo = {}
         let row = cell.target.parentElement.cells
         cellInfo.rowData = []
@@ -30,11 +35,11 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
         return cellInfo
     }
 
-    this.createTableBodyPage = (page) => {
+    createTableBodyPage = (page) => {
         let tbody
         if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))) {
             tbody = document.getElementById('tablely_tbody_' + elementId);
-            this.deleteRows(tbody);
+            deleteRows(tbody);
         } else {
             tbody = document.createElement('tbody');
             tbody.setAttribute('id', 'tablely_tbody_' + elementId)
@@ -42,7 +47,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
                 
                 tbody.dispatchEvent(new CustomEvent("row-click", {
                     bubbles: true,
-                    detail: this.getCellInfo(event)
+                    detail: getCellInfo(event)
                 }))
             })
         }
@@ -84,7 +89,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
         return tbody
     }
 
-    this.sortTableByColumn = (column, type) => {
+    sortTableByColumn = (column, type) => {
 
         if (this.indexOfRowsToDisplay.length == 0)
             switch (type) {
@@ -141,11 +146,11 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
                     break;
             }
 
-        this.createTableBodyPage(this.currentPage[1]);
+        createTableBodyPage(this.currentPage[1]);
         this.changePageInfoText();
     }
 
-    this.createHeader = () => {
+    createHeader = () => {
         let thead = document.createElement('thead');
         thead.setAttribute('id', 'tablely_thead_' + elementId)
         let thead_row = document.createElement('tr');
@@ -164,7 +169,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
                     }
                     resolve(event.target.className)
                 }).then(res => {
-                    this.sortTableByColumn(this.headers[e.target.cellIndex], res);
+                    sortTableByColumn(this.headers[e.target.cellIndex], res);
                 })
             })
             thead_td.innerText = this.headers[i];
@@ -176,13 +181,13 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
         return thead
     }
 
-    this.createInputsSelect = () => {
+    createInputsSelect = () => {
         let inputs_select = document.createElement('select');
         inputs_select.setAttribute('id', 'tablely_inputs_select_' + elementId);
         inputs_select.addEventListener('change', e => {
             this.rowsPerPage = Number(e.target.value);
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
-            this.createTableBodyPage(this.currentPage[1]);
+            createTableBodyPage(this.currentPage[1]);
             this.changePageInfoText();
         })
 
@@ -195,7 +200,7 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
         return inputs_select
     }
 
-    this.disableOrEnableButtons = () => {
+    disableOrEnableButtons = () => {
         if (this.currentPage[1] == 1)
             document.getElementById('tablely_btn_previous_' + elementId).setAttribute('disabled', true);
         else
@@ -207,46 +212,46 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
             document.getElementById('tablely_btn_next_' + elementId).removeAttribute('disabled');
     }
 
-    this.clickPreviousPage = () => {
+    clickPreviousPage = () => {
         this.currentPage[0] = this.currentPage[1];
         this.currentPage[1] = this.currentPage[1] - 1;
-        this.createTableBodyPage(this.currentPage[1]);
+        createTableBodyPage(this.currentPage[1]);
         this.changePageInfoText();
-        this.disableOrEnableButtons();
+        disableOrEnableButtons();
     }
 
-    this.createButtonPrevious = () => {
+    createButtonPrevious = () => {
         let previous = document.createElement('button');
         previous.setAttribute('id', 'tablely_btn_previous_' + elementId);
         previous.setAttribute('disabled', true);
         previous.textContent = "Previous"
         previous.addEventListener('click', e => {
-            this.clickPreviousPage()
+            clickPreviousPage()
         })
 
         return previous;
     }
 
-    this.clickNextPage = () => {
+    clickNextPage = () => {
         this.currentPage[0] = this.currentPage[1];
         this.currentPage[1] = this.currentPage[1] + 1;
-        this.createTableBodyPage(this.currentPage[1]);
+        createTableBodyPage(this.currentPage[1]);
         this.changePageInfoText();
-        this.disableOrEnableButtons();
+        disableOrEnableButtons();
     }
 
-    this.createButtonNext = () => {
+    createButtonNext = () => {
         let next = document.createElement('button');
         next.setAttribute('id', 'tablely_btn_next_' + elementId)
         next.textContent = "Next"
         next.addEventListener('click', e => {
-            this.clickNextPage();
+            clickNextPage();
         })
 
         return next;
     }
 
-    this.searchValueInObject = (obj, searchedValue) => {
+    searchValueInObject = (obj, searchedValue) => {
         let objData = Object.keys(obj).length;
 
         for (let item in obj)
@@ -256,29 +261,30 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
         return false
     }
 
-    this.searchValue = (value) => {
+    searchValue = (value) => {
         this.indexOfRowsToDisplay = []
         if (value.length > 0) {
             let table_body = document.getElementById('tablely_tbody_' + elementId);
             for (let i = 0; i < this.totalRowsToShow; i++)
-                if (this.searchValueInObject(data[i], value))
+                if (searchValueInObject(data[i], value))
                     this.indexOfRowsToDisplay.push(i);
 
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
-            this.createTableBodyPage(this.currentPage[1]);
+            createTableBodyPage(this.currentPage[1]);
             this.changePageInfoText();
         } else {
-            this.createTableBodyPage(this.currentPage[1]);
+            createTableBodyPage(this.currentPage[1]);
             this.changePageInfoText();
         }
     }
 
-    this.inputSearcher = () => {
+    inputSearcher = () => {
         let input_searcher = document.createElement('input')
         input_searcher.setAttribute('id', 'tablely_input_searcher_' + elementId)
         input_searcher.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
-                this.searchValue(e.target.value)
+                this.currentPage[1] = 1
+                searchValue(e.target.value)
             }
         })
 
@@ -288,10 +294,10 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
     this.changePageInfoText = () => {
         let page_info = document.getElementById('tablely_page_info_' + elementId);
         page_info.textContent = 'Mostrando ' + this.rowsPerPage + ' registros por pagina de ' + this.pagesNumber + ' paginas, pagina : ' + this.currentPage[1] + ', registros: ' + (this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow);
-        this.disableOrEnableButtons()
+        disableOrEnableButtons()
     }
 
-    this.createPageInfo = () => {
+    createPageInfo = () => {
         let page_info = document.createElement('p');
         page_info.setAttribute('id', 'tablely_page_info_' + elementId);
         page_info.textContent = 'Mostrando ' + this.rowsPerPage + ' registros por pagina de ' + this.pagesNumber + ' paginas, pagina : ' + this.currentPage[1] + ', registros: ' + (this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow);
@@ -301,20 +307,21 @@ function Tablely(elementId, data, inputs = [5, 10, 15, 20], numberColumns = []) 
 
 
     this.assembleTable = () => {
-        let table = this.createTable();
-        table.appendChild(this.createHeader())
-        table.appendChild(this.createTableBodyPage(this.currentPage[1]));
-        this.boxElement.appendChild(this.inputSearcher());
+        let table = createTable();
+        table.appendChild(createHeader())
+        table.appendChild(createTableBodyPage(this.currentPage[1]));
+        this.boxElement.appendChild(inputSearcher());
         this.boxElement.appendChild(table);
-        this.boxElement.appendChild(this.createInputsSelect());
-        this.boxElement.appendChild(this.createButtonPrevious());
-        this.boxElement.appendChild(this.createButtonNext());
-        this.boxElement.appendChild(this.createPageInfo());
-        console.log(table);
+        this.boxElement.appendChild(createInputsSelect());
+        this.boxElement.appendChild(createButtonPrevious());
+        this.boxElement.appendChild(createButtonNext());
+        this.boxElement.appendChild(createPageInfo());
     }
 
-    this.assembleTable();
+    
 }
 
-Tablely("mytable", empleados,[5,10,15],["id"]);
+let mytable = new Tablely({elementId:"mytable",data:empleados,numberColumns:["id"]});
+mytable.assembleTable()
+console.log(mytable)
 document.addEventListener('row-click', (e) => console.log(e.detail));
