@@ -1,4 +1,4 @@
-function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}) {
+function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = [], captionText = "My Table" }) {
     this.boxElement = document.getElementById(elementId);
     this.headers = Object.keys(data[0]);
     this.totalRowsToShow = data.length;
@@ -8,9 +8,66 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
     this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
 
 
+    createTableNavHead = () => {
+        let table_nav_head = document.createElement('nav')
+        table_nav_head.classList.add('tablely-head-nav')
+
+        let table_nav_searcher = document.createElement('div')
+        table_nav_searcher.classList.add('tablely-nav-searcher')
+
+        let table_nav_control = document.createElement('div')
+        table_nav_control.setAttribute('id', 'tablely_nav_head_control_' + elementId)
+
+        let table_nav_control_label = document.createElement('label')
+        table_nav_control_label.setAttribute('for', 'tablely_input_searcher_' + elementId)
+        table_nav_control_label.innerText = "Buscar: "
+
+        table_nav_control.appendChild(table_nav_control_label)
+
+        table_nav_control.appendChild(inputSearcher())
+
+        table_nav_searcher.appendChild(table_nav_control)
+
+        table_nav_head.appendChild(table_nav_searcher)
+
+        return table_nav_head
+    }
+
+    createTableNavFoot = () => {
+        let table_nav_foot = document.createElement('nav')
+        table_nav_foot.classList.add('tablely-foot-nav')
+
+        let table_nav_select = document.createElement('div')
+        table_nav_select.classList.add('tablely-nav-select')
+        table_nav_select.appendChild(createInputsSelect())
+
+        let table_nav_info = document.createElement('div')
+        table_nav_info.classList.add('tablely-nav-info')
+        table_nav_info.appendChild(createPageInfo())
+
+        let table_nav_controls = document.createElement('div')
+        table_nav_controls.classList.add('tablely-nav-controls')
+        table_nav_controls.appendChild(createButtonPrevious())
+        table_nav_controls.appendChild(createButtonNext())
+
+        table_nav_foot.appendChild(table_nav_select)
+        table_nav_foot.appendChild(table_nav_info)
+        table_nav_foot.appendChild(table_nav_controls)
+
+        return table_nav_foot
+    }
+
+
     createTable = () => {
         let table = document.createElement('table');
+        table.classList.add('tablely')
         table.setAttribute('id', 'tablely_table_' + elementId)
+
+        let table_caption = document.createElement('caption')
+        table_caption.classList.add('tablely-caption','tablely-caption-top')
+        table_caption.innerText = captionText
+
+        table.appendChild(table_caption)
         return table;
     }
 
@@ -44,7 +101,7 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
             tbody = document.createElement('tbody');
             tbody.setAttribute('id', 'tablely_tbody_' + elementId)
             tbody.addEventListener('click', event => {
-                
+
                 tbody.dispatchEvent(new CustomEvent("row-click", {
                     bubbles: true,
                     detail: getCellInfo(event)
@@ -90,10 +147,9 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
     }
 
     sortTableByColumn = (column, type) => {
-
         if (this.indexOfRowsToDisplay.length == 0)
             switch (type) {
-                case 'row-down':
+                case 'arrow-down':
                     data.sort((a, b) => {
                         if (a[column] < b[column]) {
                             return -1;
@@ -104,7 +160,7 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
                         return 0;
                     });
                     break;
-                case 'row-up':
+                case 'arrow-up':
                     data.sort((a, b) => {
                         if (a[column] > b[column]) {
                             return -1;
@@ -120,7 +176,7 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
             }
         else
             switch (type) {
-                case 'row-down':
+                case 'arrow-down':
                     this.indexOfRowsToDisplay.sort((a, b) => {
                         if (data[a][column] < data[b][column]) {
                             return -1;
@@ -131,7 +187,7 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
                         return 0;
                     })
                     break;
-                case 'row-up':
+                case 'arrow-up':
                     this.indexOfRowsToDisplay.sort((a, b) => {
                         if (data[a][column] > data[b][column]) {
                             return -1;
@@ -155,17 +211,17 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
         thead.setAttribute('id', 'tablely_thead_' + elementId)
         let thead_row = document.createElement('tr');
         for (let i = 0; i < this.headers.length; i++) {
-            let thead_td = document.createElement('td');
+            let thead_td = document.createElement('th');
             thead_td.addEventListener('click', e => {
                 new Promise((resolve, reject) => {
-                    if (event.target.classList.contains('row-up')) {
-                        event.target.classList.remove('row-up')
-                        event.target.classList.add('row-down')
-                    } else if (event.target.classList.contains('row-down')) {
-                        event.target.classList.remove('row-down')
-                        event.target.classList.add('row-up')
+                    if (event.target.classList.contains('arrow-up')) {
+                        event.target.classList.remove('arrow-up')
+                        event.target.classList.add('arrow-down')
+                    } else if (event.target.classList.contains('arrow-down')) {
+                        event.target.classList.remove('arrow-down')
+                        event.target.classList.add('arrow-up')
                     } else {
-                        event.target.classList.add('row-down')
+                        event.target.classList.add('arrow-down')
                     }
                     resolve(event.target.className)
                 }).then(res => {
@@ -307,21 +363,19 @@ function Tablely({elementId, data, inputs = [5, 10, 15, 20], numberColumns = []}
 
 
     this.assembleTable = () => {
+        
+        this.boxElement.classList.add('tablely_box');
         let table = createTable();
         table.appendChild(createHeader())
         table.appendChild(createTableBodyPage(this.currentPage[1]));
-        this.boxElement.appendChild(inputSearcher());
+        this.boxElement.appendChild(createTableNavHead());
         this.boxElement.appendChild(table);
-        this.boxElement.appendChild(createInputsSelect());
-        this.boxElement.appendChild(createButtonPrevious());
-        this.boxElement.appendChild(createButtonNext());
-        this.boxElement.appendChild(createPageInfo());
+        this.boxElement.appendChild(createTableNavFoot());
     }
 
-    
+
 }
 
 let mytable = new Tablely({elementId:"mytable",data:empleados,numberColumns:["id"]});
 mytable.assembleTable()
-console.log(mytable)
 document.addEventListener('row-click', (e) => console.log(e.detail));

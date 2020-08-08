@@ -1,0 +1,84 @@
+@import "colors";
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.tablely_box,
+.tablely_box::before,
+.tablely_box::after {
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+}
+
+.tablely_box {
+    .tablely {
+        width: 100%;
+        border-collapse: collapse;
+        
+        .tablely-caption-top{
+            caption-side: top;
+        }
+
+        .tablely-caption-bottom{
+            caption-side: bottom;
+        }
+
+        & .tablely-caption,
+        & thead tr th {
+            position: relative;
+            padding: .4rem .7rem;
+            margin: 0 0 .1em 0;
+            border: .1em solid $table-border;
+        }
+
+        & thead tr th.arrow-up::after {
+            content: "keyboard_arrow_up";
+            font-family: 'Material Icons';
+            position: absolute;
+            right: .5em;
+        }
+
+        & thead tr th.arrow-down::after {
+            content: "keyboard_arrow_down";
+            font-family: 'Material Icons';
+            position: absolute;
+            right: .5em;
+        }
+
+        & tbody tr td{
+            border: .1em solid $table-border;
+            padding: .2em 1em;
+        }
+
+        & thead tr th,
+        & tbody tr td{
+            width: 1%;
+            white-space: nowrap;
+        }
+    }
+
+    .tablely-head-nav{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-bottom: .5em;
+        & .tablely-nav-searcher{
+            display: flex;
+            align-items: center;
+            justify-content: left;
+        }
+    }
+
+    .tablely-foot-nav{
+        display: grid;
+        grid-template-columns: 1fr 3fr 2fr;
+
+        
+        & .tablely-nav-select,
+        & .tablely-nav-info,
+        & .tablely-nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}
+
+

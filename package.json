@@ -1,0 +1,20 @@
+{
+  "name": "tablely",
+  "version": "1.0.0",
+  "description": "a simple datatable",
+  "main": "index.js",
+  "scripts": {
+    "b_tablely":"node-sass sass/styles.scss -w css/tablely.css",
+    "b_blue_theme": "node-sass sass/styles.scss -w css/styles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milo-monsalve/Tablely.git"
+  },
+  "author": "camilo mejia monsalve",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/milo-monsalve/Tablely/issues"
+  },
+  "homepage": "https://github.com/milo-monsalve/Tablely#readme"
+}
