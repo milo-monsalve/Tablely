@@ -1,4 +1,34 @@
-function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = [], captionText = "My Table" }) {
+
+let bootstrapTheme = {
+    table: " table-bordered",
+    thead: "table-dark",
+    tableHead: "",
+    tableHeadSearch: "input-group",
+    tableHeadSearchLabel: "mr-3",
+    tableHeadSearchInput: "form-control form-control-sm rounded-0",
+    tableFoot: "",
+    tableFootSelect: "form-control form-control-sm rounded-0",
+    tableFootInfo: "",
+    tableFootControls: "",
+    tableFootControlPrevious: "btn btn-sm rounded-0 btn-primary",
+    tableFootControlNext: "btn btn-sm rounded-0 btn-primary",
+};
+
+function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = [], captionText = "My Table"
+    , theme = {
+        table: " table-bordered",
+        thead: "table-dark",
+        tableHead: "",
+        tableHeadSearch: "input-group",
+        tableHeadSearchLabel: "mr-3",
+        tableHeadSearchInput: "form-control form-control-sm rounded-0",
+        tableFoot: "",
+        tableFootSelect: "form-control form-control-sm rounded-0",
+        tableFootInfo: "",
+        tableFootControls: "",
+        tableFootControlPrevious: "btn btn-sm rounded-0 btn-primary",
+        tableFootControlNext: "btn btn-sm rounded-0 btn-primary",
+    } }) {
     this.boxElement = document.getElementById(elementId);
     this.headers = Object.keys(data[0]);
     this.totalRowsToShow = data.length;
@@ -17,11 +47,12 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
 
         let table_nav_control = document.createElement('div')
         table_nav_control.setAttribute('id', 'tablely_nav_head_control_' + elementId)
+        table_nav_control.className += theme.tableHeadSearch
 
         let table_nav_control_label = document.createElement('label')
         table_nav_control_label.setAttribute('for', 'tablely_input_searcher_' + elementId)
         table_nav_control_label.innerText = "Buscar: "
-
+        table_nav_control_label.className += theme.tableHeadSearchLabel
         table_nav_control.appendChild(table_nav_control_label)
 
         table_nav_control.appendChild(inputSearcher())
@@ -61,10 +92,11 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     createTable = () => {
         let table = document.createElement('table');
         table.classList.add('tablely')
+        table.className += theme.table;
         table.setAttribute('id', 'tablely_table_' + elementId)
 
         let table_caption = document.createElement('caption')
-        table_caption.classList.add('tablely-caption','tablely-caption-top')
+        table_caption.classList.add('tablely-caption', 'tablely-caption-top')
         table_caption.innerText = captionText
 
         table.appendChild(table_caption)
@@ -209,6 +241,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     createHeader = () => {
         let thead = document.createElement('thead');
         thead.setAttribute('id', 'tablely_thead_' + elementId)
+        thead.classList.add(theme.thead.split(' '))
         let thead_row = document.createElement('tr');
         for (let i = 0; i < this.headers.length; i++) {
             let thead_td = document.createElement('th');
@@ -240,6 +273,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     createInputsSelect = () => {
         let inputs_select = document.createElement('select');
         inputs_select.setAttribute('id', 'tablely_inputs_select_' + elementId);
+        inputs_select.className += theme.tableFootSelect
         inputs_select.addEventListener('change', e => {
             this.rowsPerPage = Number(e.target.value);
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
@@ -280,6 +314,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         let previous = document.createElement('button');
         previous.setAttribute('id', 'tablely_btn_previous_' + elementId);
         previous.setAttribute('disabled', true);
+        previous.className += theme.tableFootControlPrevious
         previous.textContent = "Previous"
         previous.addEventListener('click', e => {
             clickPreviousPage()
@@ -299,6 +334,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     createButtonNext = () => {
         let next = document.createElement('button');
         next.setAttribute('id', 'tablely_btn_next_' + elementId)
+        next.className += theme.tableFootControlNext
         next.textContent = "Next"
         next.addEventListener('click', e => {
             clickNextPage();
@@ -337,6 +373,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     inputSearcher = () => {
         let input_searcher = document.createElement('input')
         input_searcher.setAttribute('id', 'tablely_input_searcher_' + elementId)
+        input_searcher.className += theme.tableHeadSearchInput
         input_searcher.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
                 this.currentPage[1] = 1
@@ -363,7 +400,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
 
 
     this.assembleTable = () => {
-        
+
         this.boxElement.classList.add('tablely_box');
         let table = createTable();
         table.appendChild(createHeader())
@@ -372,10 +409,8 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         this.boxElement.appendChild(table);
         this.boxElement.appendChild(createTableNavFoot());
     }
-
-
 }
 
-let mytable = new Tablely({elementId:"mytable",data:empleados,numberColumns:["id"]});
+let mytable = new Tablely({ elementId: "mytable", data: empleados, numberColumns: ["id"] });
 mytable.assembleTable()
 document.addEventListener('row-click', (e) => console.log(e.detail));

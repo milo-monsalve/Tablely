@@ -9,6 +9,8 @@
 }
 
 .tablely_box {
+    margin: .5em 0;
+
     .tablely {
         width: 100%;
         border-collapse: collapse;
@@ -21,11 +23,18 @@
             caption-side: bottom;
         }
 
+        & thead tr th,
+        & tbody tr td{
+            width: 1%;
+            white-space: nowrap;
+        }
+
         & .tablely-caption,
         & thead tr th {
             position: relative;
             padding: .4rem .7rem;
             margin: 0 0 .1em 0;
+            text-align: center;
             border: .1em solid $table-border;
         }
 
@@ -47,12 +56,6 @@
             border: .1em solid $table-border;
             padding: .2em 1em;
         }
-
-        & thead tr th,
-        & tbody tr td{
-            width: 1%;
-            white-space: nowrap;
-        }
     }
 
     .tablely-head-nav{
@@ -68,8 +71,7 @@
 
     .tablely-foot-nav{
         display: grid;
-        grid-template-columns: 1fr 3fr 2fr;
-
+        grid-template-columns: 1fr 3fr 1fr;
         
         & .tablely-nav-select,
         & .tablely-nav-info,
