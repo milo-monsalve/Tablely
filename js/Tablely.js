@@ -14,20 +14,20 @@ let bootstrapTheme = {
     tableFootControlNext: "btn btn-sm rounded-0 btn-primary",
 };
 
-function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = [], captionText = "My Table"
-    , theme = {
-        table: " table-bordered",
-        thead: "table-dark",
+function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = [], captionText = "My Table", currencyColumns = [],
+    theme = {
+        table: "",
+        thead: "",
         tableHead: "",
-        tableHeadSearch: "input-group",
-        tableHeadSearchLabel: "mr-3",
-        tableHeadSearchInput: "form-control form-control-sm rounded-0",
+        tableHeadSearch: "",
+        tableHeadSearchLabel: "",
+        tableHeadSearchInput: "",
         tableFoot: "",
-        tableFootSelect: "form-control form-control-sm rounded-0",
+        tableFootSelect: "",
         tableFootInfo: "",
         tableFootControls: "",
-        tableFootControlPrevious: "btn btn-sm rounded-0 btn-primary",
-        tableFootControlNext: "btn btn-sm rounded-0 btn-primary",
+        tableFootControlPrevious: "",
+        tableFootControlNext: "",
     } }) {
     this.boxElement = document.getElementById(elementId);
     this.headers = Object.keys(data[0]);
@@ -145,11 +145,18 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         let tbody_td = document.createElement('td');
         tbody_td.innerText = 'Sin resultados';
         tbody_td.style.textAlign = 'center';
-        tbody_td.setAttribute('colspan', this.headers.length )
+        tbody_td.setAttribute('colspan', this.headers.length)
         tbody_row.appendChild(tbody_td);
         tbody.appendChild(tbody_row);
 
         return tbody
+    }
+
+    setFormat = (column, row) => {
+        if (currencyColumns.indexOf(this.headers[column]) > -1)
+            return Intl.NumberFormat("en-US").format(row[column])
+
+        return row[column]
     }
 
     createTableBodyPage = (page) => {
@@ -179,7 +186,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
 
                     for (let j = 0; j < tr_data.length; j++) {
                         let tbody_td = document.createElement('td');
-                        tbody_td.innerText = tr_data[j];
+                        tbody_td.innerText = setFormat(j, tr_data)
                         tbody_row.appendChild(tbody_td);
                     }
 
@@ -194,7 +201,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
 
                     for (let j = 0; j < tr_data.length; j++) {
                         let tbody_td = document.createElement('td');
-                        tbody_td.innerText = tr_data[j];
+                        tbody_td.innerText = setFormat(j, tr_data);
                         tbody_row.appendChild(tbody_td);
                     }
 
@@ -431,7 +438,6 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         return page_info;
     }
 
-
     this.assembleTable = () => {
 
         this.boxElement.classList.add('tablely_box');
@@ -443,7 +449,3 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         this.boxElement.appendChild(createTableNavFoot());
     }
 }
-
-let mytable = new Tablely({ elementId: "mytable", data: empleados, numberColumns: ["id"] });
-mytable.assembleTable()
-document.addEventListener('row-click', (e) => console.log(e.detail));

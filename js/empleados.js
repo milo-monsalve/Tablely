@@ -1,25 +1,4 @@
-var empleados2 =
-[
-    { "id": 1, "first_name": "Scotty", "last_name": "Gokes", "email": "sgokes0@merriam-webster.com", "gender": "Male", "ip_address": "240.230.202.144" },
-    { "id": 2, "first_name": "Rainer", "last_name": "Kinnerley", "email": "rkinnerley1@bravesites.com", "gender": "Male", "ip_address": "32.138.89.108" },
-    { "id": 3, "first_name": "Jacquetta", "last_name": "Atkyns", "email": "jatkyns2@naver.com", "gender": "Female", "ip_address": "46.73.116.225" },
-    { "id": 4, "first_name": "Cheri", "last_name": "Girardengo", "email": "cgirardengo3@blogger.com", "gender": "Female", "ip_address": "117.116.57.64" },
-    { "id": 5, "first_name": "Cale", "last_name": "De Cristofalo", "email": "cdecristofalo4@forbes.com", "gender": "Male", "ip_address": "142.75.44.81" },
-    { "id": 6, "first_name": "Bettine", "last_name": "Archbald", "email": "barchbald5@aboutads.info", "gender": "Female", "ip_address": "89.13.16.141" },
-    { "id": 7, "first_name": "Chelsie", "last_name": "Chrisp", "email": "cchrisp6@un.org", "gender": "Female", "ip_address": "129.225.115.186" },
-    { "id": 8, "first_name": "Homere", "last_name": "Izchaki", "email": "hizchaki7@nymag.com", "gender": "Male", "ip_address": "153.124.0.17" },
-    { "id": 9, "first_name": "Shawn", "last_name": "Sowden", "email": "ssowden8@networksolutions.com", "gender": "Male", "ip_address": "13.178.120.137" },
-    { "id": 10, "first_name": "Webster", "last_name": "Lippett", "email": "wlippett9@typepad.com", "gender": "Male", "ip_address": "23.44.255.56" },
-    { "id": 11, "first_name": "Carol-jean", "last_name": "Panner", "email": "cpannera@boston.com", "gender": "Female", "ip_address": "11.54.55.247" },
-    { "id": 12, "first_name": "Arch", "last_name": "Oblein", "email": "aobleinb@360.cn", "gender": "Male", "ip_address": "68.2.137.100" },
-    { "id": 13, "first_name": "Essy", "last_name": "Smedmore", "email": "esmedmorec@clickbank.net", "gender": "Female", "ip_address": "116.217.160.132" },
-    { "id": 14, "first_name": "Ashien", "last_name": "Kingzet", "email": "akingzetd@indiatimes.com", "gender": "Female", "ip_address": "76.209.186.160" },
-    { "id": 15, "first_name": "Thorn", "last_name": "Paulley", "email": "tpaulleye@google.co.jp", "gender": "Male", "ip_address": "36.214.173.129" },
-    { "id": 16, "first_name": "Mayor", "last_name": "Riach", "email": "mriachf@about.me", "gender": "Male", "ip_address": "102.86.42.128" },
-    { "id": 17, "first_name": "Gabby", "last_name": "Schroter", "email": "gschroterg@blogspot.com", "gender": "Male", "ip_address": "175.217.36.40" },
-    { "id": 18, "first_name": "Kaitlin", "last_name": "Huton", "email": "khutonh@mtv.com", "gender": "Female", "ip_address": "131.239.90.158" },
-    { "id": 19, "first_name": "Ambros", "last_name": "Dewberry", "email": "adewberryi@tripod.com", "gender": "Male", "ip_address": "112.86.181.158" }
-]
+
 var empleados =
 [
     { "id": 1, "first_name": "Scotty", "last_name": "Gokes", "email": "sgokes0@merriam-webster.com", "gender": "Male", "ip_address": "240.230.202.144" },
