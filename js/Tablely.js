@@ -124,6 +124,34 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         return cellInfo
     }
 
+    createTableBodyEmpty = () => {
+        let tbody
+        if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))) {
+            tbody = document.getElementById('tablely_tbody_' + elementId);
+            deleteRows(tbody);
+        } else {
+            tbody = document.createElement('tbody');
+            tbody.setAttribute('id', 'tablely_tbody_' + elementId)
+            tbody.addEventListener('click', event => {
+
+                tbody.dispatchEvent(new CustomEvent("row-click", {
+                    bubbles: true,
+                    detail: getCellInfo(event)
+                }))
+            })
+        }
+
+        let tbody_row = document.createElement('tr');
+        let tbody_td = document.createElement('td');
+        tbody_td.innerText = 'Sin resultados';
+        tbody_td.style.textAlign = 'center';
+        tbody_td.setAttribute('colspan', this.headers.length )
+        tbody_row.appendChild(tbody_td);
+        tbody.appendChild(tbody_row);
+
+        return tbody
+    }
+
     createTableBodyPage = (page) => {
         let tbody
         if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))) {
@@ -362,7 +390,12 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
                     this.indexOfRowsToDisplay.push(i);
 
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
-            createTableBodyPage(this.currentPage[1]);
+
+            if (this.indexOfRowsToDisplay.length > 0)
+                createTableBodyPage(this.currentPage[1]);
+            else
+                createTableBodyEmpty();
+
             this.changePageInfoText();
         } else {
             createTableBodyPage(this.currentPage[1]);
