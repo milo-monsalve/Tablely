@@ -29,9 +29,10 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         tableFootControlPrevious: "",
         tableFootControlNext: "",
     } }) {
+    this.data = data;
     this.boxElement = document.getElementById(elementId);
-    this.headers = Object.keys(data[0]);
-    this.totalRowsToShow = data.length;
+    this.headers = Object.keys(this.data[0]);
+    this.totalRowsToShow = this.data.length;
     this.indexOfRowsToDisplay = [];
     this.rowsPerPage = 5;
     this.currentPage = [0, 1];
@@ -88,7 +89,6 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         return table_nav_foot
     }
 
-
     createTable = () => {
         let table = document.createElement('table');
         table.classList.add('tablely')
@@ -103,13 +103,26 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         return table;
     }
 
-    this.clearTableBody = () => {
-        tbody = document.getElementById('tablely_tbody_' + elementId);
-        deleteRows(tbody);
+    this.updateTable = data => {
+        this.data = data;
+        this.headers = Object.keys(this.data[0]);
+        this.totalRowsToShow = this.data.length;
+        this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
+        this.clearTable();
+        this.createHeader();
+        this.createTableBodyPage(1);
+        this.changePageInfoText();
     }
 
-    deleteRows = (tableBody) => {
-        tableBody.querySelectorAll('*').forEach(row => row.remove());
+    this.clearTable = () => {
+        tbody = document.getElementById('tablely_tbody_' + elementId);
+        deleteRows(tbody);
+        thead = document.getElementById('tablely_thead_' + elementId);
+        deleteRows(thead);
+    }
+
+    deleteRows = (theadOrTbody) => {
+        theadOrTbody.querySelectorAll('*').forEach(row => row.remove());
     }
 
     getCellInfo = (cell) => {
@@ -134,7 +147,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
             tbody.setAttribute('id', 'tablely_tbody_' + elementId)
             tbody.addEventListener('click', event => {
 
-                tbody.dispatchEvent(new CustomEvent(elementId+"-row-click", {
+                tbody.dispatchEvent(new CustomEvent(elementId + "-row-click", {
                     bubbles: true,
                     detail: getCellInfo(event)
                 }))
@@ -155,12 +168,12 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     this.setFormat = (column, row) => {
         if (currencyColumns.indexOf(this.headers[column]) > -1)
             return Intl.NumberFormat("en-US").format(row[column])
-        
+
         return row[column]
     }
 
     this.createTableBodyPage = (page) => {
-        let tbody
+        let tbody;
         if (document.body.contains(document.getElementById('tablely_tbody_' + elementId))) {
             tbody = document.getElementById('tablely_tbody_' + elementId);
             deleteRows(tbody);
@@ -169,7 +182,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
             tbody.setAttribute('id', 'tablely_tbody_' + elementId)
             tbody.addEventListener('click', event => {
 
-                tbody.dispatchEvent(new CustomEvent("row-click", {
+                tbody.dispatchEvent(new CustomEvent(elementId + "-row-click", {
                     bubbles: true,
                     detail: getCellInfo(event)
                 }))
@@ -182,11 +195,11 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
             for (let i = showRowsSince; i < showRowsUntil; i++) {
                 if (i < this.totalRowsToShow) {
                     let tbody_row = document.createElement('tr');
-                    let tr_data = Object.values(data[i]);
+                    let tr_data = Object.values(this.data[i]);
                     for (let j = 0; j < tr_data.length; j++) {
                         let tbody_td = document.createElement('td');
                         tbody_td.innerText = this.setFormat(j, tr_data);
-                        
+
                         tbody_row.appendChild(tbody_td);
                     }
 
@@ -197,7 +210,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
             for (let i = showRowsSince; i < showRowsUntil; i++) {
                 if (i < this.indexOfRowsToDisplay.length) {
                     let tbody_row = document.createElement('tr');
-                    let tr_data = Object.values(data[this.indexOfRowsToDisplay[i]]);
+                    let tr_data = Object.values(this.data[this.indexOfRowsToDisplay[i]]);
 
                     for (let j = 0; j < tr_data.length; j++) {
                         let tbody_td = document.createElement('td');
@@ -217,7 +230,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         if (this.indexOfRowsToDisplay.length == 0)
             switch (type) {
                 case 'arrow-down':
-                    data.sort((a, b) => {
+                    this.data.sort((a, b) => {
                         if (a[column] < b[column]) {
                             return -1;
                         }
@@ -228,7 +241,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
                     });
                     break;
                 case 'arrow-up':
-                    data.sort((a, b) => {
+                    this.data.sort((a, b) => {
                         if (a[column] > b[column]) {
                             return -1;
                         }
@@ -245,10 +258,10 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
             switch (type) {
                 case 'arrow-down':
                     this.indexOfRowsToDisplay.sort((a, b) => {
-                        if (data[a][column] < data[b][column]) {
+                        if (this.data[a][column] < this.data[b][column]) {
                             return -1;
                         }
-                        if (data[a][column] > data[b][column]) {
+                        if (this.data[a][column] > this.data[b][column]) {
                             return 1;
                         }
                         return 0;
@@ -256,10 +269,10 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
                     break;
                 case 'arrow-up':
                     this.indexOfRowsToDisplay.sort((a, b) => {
-                        if (data[a][column] > data[b][column]) {
+                        if (this.data[a][column] > this.data[b][column]) {
                             return -1;
                         }
-                        if (data[a][column] < data[b][column]) {
+                        if (this.data[a][column] < this.data[b][column]) {
                             return 1;
                         }
                         return 0;
@@ -273,9 +286,16 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         this.changePageInfoText();
     }
 
-    createHeader = () => {
-        let thead = document.createElement('thead');
-        thead.setAttribute('id', 'tablely_thead_' + elementId)
+    this.createHeader = () => {
+        let thead;
+        if (document.body.contains(document.getElementById('tablely_thead_' + elementId))) {
+            thead = document.getElementById('tablely_thead_' + elementId);
+            deleteRows(thead);
+        } else {
+            thead = document.createElement('thead');
+            thead.setAttribute('id', 'tablely_thead_' + elementId)
+        }
+
         thead.classList.add(theme.thead.split(' '))
         let thead_row = document.createElement('tr');
         for (let i = 0; i < this.headers.length; i++) {
@@ -342,7 +362,6 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         this.currentPage[1] = this.currentPage[1] - 1;
         this.createTableBodyPage(this.currentPage[1]);
         this.changePageInfoText();
-        // this.disableOrEnableButtons();
     }
 
     createButtonPrevious = () => {
@@ -363,7 +382,6 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         this.currentPage[1] = this.currentPage[1] + 1;
         this.createTableBodyPage(this.currentPage[1]);
         this.changePageInfoText();
-        // this.disableOrEnableButtons();
     }
 
     createButtonNext = () => {
@@ -394,7 +412,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
             let table_body = document.getElementById('tablely_tbody_' + elementId);
 
             for (let i = 0; i < this.totalRowsToShow; i++)
-                if (searchValueInObject(data[i], value))
+                if (searchValueInObject(this.data[i], value))
                     this.indexOfRowsToDisplay.push(i);
 
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
@@ -407,7 +425,7 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
         } else {
             this.pagesNumber = Math.ceil((this.indexOfRowsToDisplay.length > 0 ? this.indexOfRowsToDisplay.length : this.totalRowsToShow) / this.rowsPerPage);
             this.createTableBodyPage(1);
-            
+
         }
         this.changePageInfoText();
     }
@@ -441,10 +459,9 @@ function Tablely({ elementId, data, inputs = [5, 10, 15, 20], numberColumns = []
     }
 
     this.assembleTable = () => {
-
         this.boxElement.classList.add('tablely_box');
         let table = createTable();
-        table.appendChild(createHeader())
+        table.appendChild(this.createHeader())
         table.appendChild(this.createTableBodyPage(this.currentPage[1]));
         this.boxElement.appendChild(createTableNavHead());
         this.boxElement.appendChild(table);
