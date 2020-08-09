@@ -17,6 +17,10 @@
         <div id="mytable"></div>
     </div>
 
+    <div class="container">
+        <div id="mytable2"></div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -31,9 +35,13 @@
     <script src="js/empleados2.js"></script>
     <script src="js/Tablely.js"></script>
     <script>
-        let mytable = new Tablely({ elementId: "mytable", data: empleados2,currencyColumns:["Salary"] , numberColumns: ["id"],theme:bootstrapTheme });
+        let mytable = new Tablely({ elementId: "mytable", data: empleados, numberColumns: ["id"],theme:bootstrapTheme });
         mytable.assembleTable()
         document.addEventListener('row-click', (e) => console.log(e.detail));
+
+        let mytable2 = new Tablely({ elementId: "mytable2", data: empleados2,currencyColumns:["Salary"] , numberColumns: ["id"],theme:bootstrapTheme });
+        mytable2.assembleTable()
+        
     </script>
 </body>
 
